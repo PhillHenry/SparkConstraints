@@ -15,7 +15,7 @@ import java.nio.file.Files
 object SparkForTesting {
   val master: String         = "local[*]"
   val sparkConf: SparkConf   = {
-    val dir = Files.createTempDirectory("SparkForTesting").toString
+    val dir: String = Files.createTempDirectory("SparkForTesting").toString
     println(s"Using temp directory $dir")
     new SparkConf()
       .setMaster(master)
@@ -23,6 +23,7 @@ object SparkForTesting {
       .set("spark.driver.allowMultipleContexts", "true")
       .set(CATALOG_IMPLEMENTATION.key, "hive")
       .set(WAREHOUSE_PATH.key, dir)
+      .set("METASTOREWAREHOUSE", dir)
       .set(SPARK_SESSION_EXTENSIONS.key, classOf[ConstraintSparkSessionExtensions].getCanonicalName)
   }
   sparkConf.set("spark.driver.allowMultipleContexts", "true")
