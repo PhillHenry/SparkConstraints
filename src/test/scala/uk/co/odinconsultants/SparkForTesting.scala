@@ -17,13 +17,13 @@ object SparkForTesting {
   val sparkConf: SparkConf   = {
     val dir: String = Files.createTempDirectory("SparkForTesting").toString
     println(s"Using temp directory $dir")
+    System.setProperty("derby.system.home", dir)
     new SparkConf()
       .setMaster(master)
       .setAppName("Tests")
       .set("spark.driver.allowMultipleContexts", "true")
       .set(CATALOG_IMPLEMENTATION.key, "hive")
-      .set(WAREHOUSE_PATH.key, dir)
-      .set("METASTOREWAREHOUSE", dir)
+      .set(WAREHOUSE_PATH.key, dir).setSparkHome(dir)
       .set(SPARK_SESSION_EXTENSIONS.key, classOf[ConstraintSparkSessionExtensions].getCanonicalName)
   }
   sparkConf.set("spark.driver.allowMultipleContexts", "true")
