@@ -4,7 +4,7 @@
 This is all called when the lazy `QueryExecution.executedPlan` is referenced.
 It's instantiated in `HiveAnalysis.apply`, a `Rule[LogicalPlan]`.
 `HiveAnalysis` is added to `Analyser.postHocResolutionRules`. The Analyzer in turn is created in `BaseSessionStateBuilder.analyzer`
-It appears that we can subvert which builder we use for SessionState builder (see `SparkSession.sessionState` which uses the conf)
+Which `BaseSessionStateBuilder` we use (see `SparkSession.sessionState` which uses the conf) seems limited to two options (see `SparkSession.sessionStateClassName`)
 
 `SingleDirectoryDataWriter.write` which is a `FileFormatDataWriter` has access to the column metadata via `dscription.allColumns.AttributeReference.metaData`
 `SingleDirectoryDataWriter` is instantiated in `FileFormatWriter.executeTask` which in turn is called from `SaveAsHiveFile.saveAsHiveFile` (specifically, its sub class `InsertIntoHiveTable`) which in turn springs out of `CreateHiveTableAsSelectCommand`
