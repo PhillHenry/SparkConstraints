@@ -98,19 +98,6 @@
       <version>${spark.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- Need Hive 3 to work with Spark 2.3 -->
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-service</artifactId>
-      <version>${hive.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.hive</groupId>
-      <artifactId>hive-jdbc</artifactId>
-      <version>${hive.version}</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -169,17 +156,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--
-            Run with:
-            mvn assembly:assembly -DdescriptorId=jar-with-dependencies
-            see https://stackoverflow.com/questions/1832853/is-it-possible-to-create-an-uber-jar-containing-the-project-classes-and-the-pr
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-            </plugin>
-
         </plugins>
     </build>
 

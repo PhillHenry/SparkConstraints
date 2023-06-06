@@ -7,6 +7,7 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
     "given our configuration" should {
       val df = spark.createDataFrame(Seq((1, "a"), (2, "b")))
       df.show()
+      df.writeTo("spark_file_test_writeTo").create()
     }
   }
 }
