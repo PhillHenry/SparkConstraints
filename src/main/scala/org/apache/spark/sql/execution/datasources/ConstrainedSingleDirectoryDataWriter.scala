@@ -12,7 +12,8 @@ class ConstrainedSingleDirectoryDataWriter(
 ) extends SingleDirectoryDataWriter(description, taskAttemptContext, committer, customMetrics) {
   println("ConstrainedSingleDirectoryDataWriter")
   override def write(record: InternalRow): Unit = {
-    println(s"record = $record, meta = ${description.allColumns}")
+    // TODO this line will explode for anything but the test. But it demonstrates that we can make assertions here
+    println(s"record = ${record.getInt(0)} ${record.getString(1)}, allColumns = ${description.allColumns.head.metadata}, dataColumns = ${description.dataColumns}")
     super.write(record)
   }
 }

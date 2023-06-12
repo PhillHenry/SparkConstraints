@@ -10,7 +10,7 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
   "Spark" when {
     "given our configuration" should {
 
-      val data: Seq[(Int, String)] = Seq((1, "a"), (2, "b"))
+      val data: Seq[(Int, String)] = Seq((41, "phill"), (42, "henry"))
       val builder                  = new MetadataBuilder
       builder.putLong("max", 2)
       val intMetadata: Metadata    = builder.build()
