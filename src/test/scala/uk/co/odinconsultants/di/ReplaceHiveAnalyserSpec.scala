@@ -1,7 +1,7 @@
 package uk.co.odinconsultants.di
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.{Metadata, MetadataBuilder}
+import org.apache.spark.sql.types.{Metadata, MetadataBuilder, StructType}
 import org.scalatest.wordspec.AnyWordSpec
 import uk.co.odinconsultants.SparkForTesting._
 
@@ -23,10 +23,16 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
         df.writeTo(tableName).create()
         val output: DataFrame = spark.read.table(tableName)
         assert(output.collect().length == data.length)
-        val outputMetadata: Metadata = output.schema.fields.filter(_.name == IntField).head.metadata
+        val outputMetadata: Metadata = metadataOf(output.schema,  IntField)
         assert(outputMetadata == intMetadata)
         println(outputMetadata.json)
+
+        val schema: StructType = spark.sessionState.catalog.externalCatalog.getTable("default", tableName).schema
+        println(s"schema = ${metadataOf(schema, IntField)}")
+        assert(outputMetadata == metadataOf(schema, IntField))
       }
     }
   }
+
+  def metadataOf(schema: StructType, colName: String): Metadata = schema.fields.filter(_.name == colName).head.metadata
 }
