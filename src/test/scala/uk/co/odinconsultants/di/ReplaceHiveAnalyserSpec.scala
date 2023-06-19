@@ -1,4 +1,5 @@
 package uk.co.odinconsultants.di
+import org.apache.spark.sql.catalyst.analysis.NoSuchTableException
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{Metadata, MetadataBuilder, StructType}
@@ -24,12 +25,15 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
         assert(outputMetadata == metadataOf(schema, IntField))
       }
 
-      "blow up if a constraint is violated" in new SimpleFixture {
+      "nothing is written and an exception is thrown  if a constraint is violated" in new SimpleFixture {
         val intMetadata: Metadata    = maxInt(data.map(_.id).min - 1)
         val df: DataFrame =
           spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
         assertThrows[Exception] {
           df.writeTo(tableName).create()
+        }
+        assertThrows[NoSuchTableException] {
+          spark.sessionState.catalog.externalCatalog.getTable("default", tableName)
         }
       }
     }
