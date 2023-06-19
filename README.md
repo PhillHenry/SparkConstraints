@@ -1,7 +1,7 @@
 # SparkConstraints
 
 Demonstrates data contracts using Apache Spark.
-This is purely a very simple Proof of Concept, nothing more.
+This is a very simple Proof of Concept, nothing more.
 
 The contract is stored in the metadata of a `DataFrame` in the metastore.
 
