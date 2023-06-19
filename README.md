@@ -14,6 +14,6 @@ I'm hoping there is a more elegant solution...
 
 Run the tests with 
 
-`mvn clean install`
+`mvn test`
 
 You'll see the test `ReplaceHiveAnalyserSpec` run which first persists a table that conforms to the constraints then tries to persist one that violates them. 
