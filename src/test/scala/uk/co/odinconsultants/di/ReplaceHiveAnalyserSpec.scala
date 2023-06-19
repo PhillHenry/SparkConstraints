@@ -6,18 +6,17 @@ import org.scalatest.wordspec.AnyWordSpec
 import uk.co.odinconsultants.SparkForTesting._
 
 class ReplaceHiveAnalyserSpec extends AnyWordSpec {
-  val IntField: String = "_1"
+  val IntField: String = "id"
   "Spark" when {
     "given our configuration" should {
 
-      val data: Seq[(Int, String)] = Seq((41, "phill"), (42, "henry"))
       val builder                  = new MetadataBuilder
       builder.putLong("max", 2)
       val intMetadata: Metadata    = builder.build()
-      val df: DataFrame            =
-        spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
 
-      "read and write to metastore" in {
+      "read and write to metastore" in new SimpleFixture {
+        val df: DataFrame =
+          spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
         val tableName         = "spark_file_test_writeTo"
         df.show()
         df.writeTo(tableName).create()
