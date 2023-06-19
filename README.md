@@ -3,7 +3,7 @@
 Demonstrates data contracts using Apache Spark.
 This is purely a very simple Proof of Concept, nothing more.
 
-The contract is stored as metadata.
+The contract is stored in the metadata of a `DataFrame` in the metastore.
 
 Spark code has been bastardised to allow the injection of the constraints.
 (See the code in `src/main/scala/org/apache/spark/`).
