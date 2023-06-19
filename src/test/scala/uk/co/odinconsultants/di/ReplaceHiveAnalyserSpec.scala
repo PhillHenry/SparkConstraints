@@ -4,14 +4,15 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{Metadata, MetadataBuilder, StructType}
 import org.scalatest.wordspec.AnyWordSpec
 import uk.co.odinconsultants.SparkForTesting._
+import uk.co.odinconsultants.di.ConstraintLittleLanguage.KEY_MAX_INT
 
 class ReplaceHiveAnalyserSpec extends AnyWordSpec {
 
   "Spark" when {
     "using our bastardised code" should {
 
-      "store the constraints as metadata" in new SimpleFixture {
-        val intMetadata: Metadata    = maxInt(2)
+      "successfully store the constraints as metadata" in new SimpleFixture {
+        val intMetadata: Metadata    = maxInt(data.map(_.id).max)
         val df: DataFrame            =
           spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
         df.writeTo(tableName).create()
@@ -22,12 +23,21 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
           spark.sessionState.catalog.externalCatalog.getTable("default", tableName).schema
         assert(outputMetadata == metadataOf(schema, IntField))
       }
+
+      "blow up if a constraint is violated" in new SimpleFixture {
+        val intMetadata: Metadata    = maxInt(data.map(_.id).min - 1)
+        val df: DataFrame =
+          spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
+        assertThrows[Exception] {
+          df.writeTo(tableName).create()
+        }
+      }
     }
   }
 
   private def maxInt(maxInt: Int): Metadata = {
     val builder = new MetadataBuilder
-    builder.putLong("max", maxInt)
+    builder.putLong(KEY_MAX_INT, maxInt)
     builder.build()
   }
 
