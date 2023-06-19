@@ -25,7 +25,7 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
         assert(outputMetadata == metadataOf(schema, IntField))
       }
 
-      "nothing is written and an exception is thrown  if a constraint is violated" in new SimpleFixture {
+      "write nothing and throw an exception if a constraint is violated" in new SimpleFixture {
         val intMetadata: Metadata    = maxInt(data.map(_.id).min - 1)
         val df: DataFrame =
           spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
