@@ -13,6 +13,8 @@ trait SimpleFixture extends Fixture[Datum] {
 
   import spark.implicits._
 
+  val IntField: String = "id"
+
   val tableName: String = this.getClass.getName.replace("$", "_").replace(".", "_")
 
   val data: Seq[Datum] = Seq(Datum(41, "phill"), Datum(42, "henry"))

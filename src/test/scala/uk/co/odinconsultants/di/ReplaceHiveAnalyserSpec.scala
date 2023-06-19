@@ -6,29 +6,31 @@ import org.scalatest.wordspec.AnyWordSpec
 import uk.co.odinconsultants.SparkForTesting._
 
 class ReplaceHiveAnalyserSpec extends AnyWordSpec {
-  val IntField: String = "id"
+
   "Spark" when {
-    "given our configuration" should {
+    "using our bastardised code" should {
 
-      val builder                  = new MetadataBuilder
-      builder.putLong("max", 2)
-      val intMetadata: Metadata    = builder.build()
-
-      "read and write to metastore" in new SimpleFixture {
-        val df: DataFrame =
+      "store the constraints as metadata" in new SimpleFixture {
+        val intMetadata: Metadata    = maxInt(2)
+        val df: DataFrame            =
           spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
         df.writeTo(tableName).create()
-        val output        : Dataset[Datum] = checkDataIsIn()
-        val outputMetadata: Metadata       = metadataOf(output.schema,  IntField)
+        val output: Dataset[Datum]   = checkDataIsIn()
+        val outputMetadata: Metadata = metadataOf(output.schema, IntField)
         assert(outputMetadata == intMetadata)
-        println(outputMetadata.json)
-
-        val schema: StructType = spark.sessionState.catalog.externalCatalog.getTable("default", tableName).schema
-        println(s"schema = ${metadataOf(schema, IntField)}")
+        val schema: StructType       =
+          spark.sessionState.catalog.externalCatalog.getTable("default", tableName).schema
         assert(outputMetadata == metadataOf(schema, IntField))
       }
     }
   }
 
-  def metadataOf(schema: StructType, colName: String): Metadata = schema.fields.filter(_.name == colName).head.metadata
+  private def maxInt(maxInt: Int): Metadata = {
+    val builder = new MetadataBuilder
+    builder.putLong("max", maxInt)
+    builder.build()
+  }
+
+  def metadataOf(schema: StructType, colName: String): Metadata =
+    schema.fields.filter(_.name == colName).head.metadata
 }
