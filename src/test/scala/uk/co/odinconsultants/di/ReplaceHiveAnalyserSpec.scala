@@ -1,5 +1,5 @@
 package uk.co.odinconsultants.di
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{Metadata, MetadataBuilder, StructType}
 import org.scalatest.wordspec.AnyWordSpec
@@ -17,12 +17,9 @@ class ReplaceHiveAnalyserSpec extends AnyWordSpec {
       "read and write to metastore" in new SimpleFixture {
         val df: DataFrame =
           spark.createDataFrame(data).withColumn(IntField, col(IntField).as(IntField, intMetadata))
-        val tableName         = "spark_file_test_writeTo"
-        df.show()
         df.writeTo(tableName).create()
-        val output: DataFrame = spark.read.table(tableName)
-        assert(output.collect().length == data.length)
-        val outputMetadata: Metadata = metadataOf(output.schema,  IntField)
+        val output        : Dataset[Datum] = checkDataIsIn()
+        val outputMetadata: Metadata       = metadataOf(output.schema,  IntField)
         assert(outputMetadata == intMetadata)
         println(outputMetadata.json)
 
