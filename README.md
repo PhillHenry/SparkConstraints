@@ -16,4 +16,5 @@ Run the tests with
 
 `mvn test`
 
-You'll see the test `ReplaceHiveAnalyserSpec` run which first persists a table that conforms to the constraints then tries to persist one that violates them. 
+You'll see the test [ReplaceHiveAnalyserSpec](uk/co/odinconsultants/di/ReplaceHiveAnalyserSpec.scala) 
+run which first persists a table that conforms to the constraints then tries to persist one that violates them. 
